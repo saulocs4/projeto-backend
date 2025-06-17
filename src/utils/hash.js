@@ -1,3 +1,5 @@
+//correção
+
 const bcrypt = require('bcryptjs');
 
 const SALT_ROUNDS = 10; 
