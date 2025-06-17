@@ -1,12 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
-
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
+
 
 
 const userRoutes = require('./routes/user.routes');
@@ -24,7 +24,7 @@ app.use('/v1/category', categoryRoutes);
 app.use('/v1/product', productRoutes);
 
 
-app.use((req, res, next) => {
+app.use ((req, res, next) => {
   res.status(404).json({ message: 'Rota não encontrada.' });
 });
 
@@ -33,5 +33,15 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Erro interno do servidor.' });
 });
+
+
+const PORT = process.env.PORT || 3000;
+
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Access at http://localhost:${PORT}`);
+});
+
 
 module.exports = app;
