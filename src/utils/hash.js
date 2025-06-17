@@ -1,4 +1,3 @@
-//correção
 
 const bcrypt = require('bcryptjs');
 
