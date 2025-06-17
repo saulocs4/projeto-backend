@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+ 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstname String   
+  surname   String   
+  email     String   @unique
+  password  String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  use_in_menu Boolean? @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    ProductCategory[] 
+}
+
+model Product {
+  id                Int       @id @default(autoincrement())
+  enabled           Boolean?  @default(false)
+  name              String
+  slug              String    @unique
+  use_in_menu       Boolean?  @default(false)
+  stock             Int?      @default(0)
+  description       String?
+  price             Float
+  price_with_discount Float
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  
+  images            ProductImage[] 
+
+
+  categories        ProductCategory[] 
+  options           ProductOption[]
+
+}
+
+model ProductImage {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  enabled     Boolean? @default(false)
+  path        String
+
+
+  product     Product  @relation(fields: [productId], references: [id]) 
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+
+enum ProductOptionShape {
+  square
+  circle
+}
+
+enum ProductOptionType {
+  text
+  color
+}
+
+
+model ProductOption {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  title       String
+  shape       ProductOptionShape? @default(square)
+  radius      Int?                @default(0)
+  type        ProductOptionType?  @default(text)
+  values      String
+
+
+  product     Product             @relation(fields: [productId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+
+model ProductCategory {
+  productId  Int
+  categoryId Int
+
+  product    Product  @relation(fields: [productId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([productId, categoryId])
+}
