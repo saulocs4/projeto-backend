@@ -1,36 +1,33 @@
 const productServices = require('../../services/product');
 
-// Controlador para obter um produto pelo seu ID.
-// GET /v1/product/:id
-
-const getProductByIdController = async (req, res) => {
+// Controlador para deletar um produto pelo seu ID.
+// DELETE /v1/product/:id
+const deleteProductController = async (req, res) => {
   try {
     const { id } = req.params; 
+    const isDeleted = await productServices.deleteProduct(id);
 
-    
-    const product = await productServices.getProductById(id);
-
-    
-    if (!product) {
+    if (!isDeleted) {
+      
       return res.status(404).json({ message: 'Produto não encontrado.' });
     }
 
-   
-    res.status(200).json(product);
+    
+    res.status(204).send();
 
   } catch (error) {
-    console.error('Erro ao buscar produto por ID:', error);
+    console.error('Erro ao deletar produto:', error);
 
     
     if (error.message.includes('ID do produto inválido')) {
       return res.status(400).json({ message: error.message });
     }
 
-   
+    
     res.status(500).json({ message: 'Erro interno do servidor.' });
   }
 };
 
 module.exports = {
-  getProductByIdController,
+  deleteProductController,
 };

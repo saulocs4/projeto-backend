@@ -1,19 +1,34 @@
 const prisma = require('../../config/prisma');
 
-const searchProductsRepository = async ({ limit, offset, where, select }) => {
-  const findManyOptions = {
-    where,
-    select,
-  };
-
-  if (limit !== -1) { 
-    findManyOptions.take = limit;
-    findManyOptions.skip = offset;
-  }
-
+const searchProductsRepository = async ({ limit, offset }) => {
   const [products, total] = await prisma.$transaction([
-    prisma.product.findMany(findManyOptions),
-    prisma.product.count({ where }),
+    prisma.product.findMany({
+      take: limit === -1 ? undefined : limit,
+      skip: offset,
+      include: { 
+        images: {
+          select: {
+            id: true,
+            path: true,
+          },
+        },
+        options: {
+          select: {
+            id: true,
+            title: true,
+            shape: true,
+            type: true,
+            values: true,
+          },
+        },
+        categories: { 
+          select: {
+            categoryId: true,
+          },
+        },
+      },
+    }),
+    prisma.product.count(),
   ]);
 
   return {
