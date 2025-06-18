@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "npx nodemon index.js",
+    "dev": "npx nodemon src/app.js",
     "swagger": "node swagger.js"
   },
   "keywords": [],
